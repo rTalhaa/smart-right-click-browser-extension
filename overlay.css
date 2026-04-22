@@ -21,7 +21,8 @@
   letter-spacing: 0 !important;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 240ms var(--srcbe-ease);
+  transition: opacity 140ms var(--srcbe-ease);
+  contain: layout style;
 }
 
 #smart-right-click-overlay-root *,
@@ -41,7 +42,7 @@
   background:
     radial-gradient(circle at 50% 48%, rgba(11, 7, 22, 0.66), rgba(6, 4, 13, 0.28) 34%, rgba(6, 4, 13, 0.08) 58%, transparent 78%),
     radial-gradient(circle at 50% 50%, hsl(var(--srcbe-query-hue) 88% 50% / 0.16), transparent 42%) !important;
-  backdrop-filter: blur(2px) saturate(1.02) !important;
+  backdrop-filter: none !important;
 }
 
 #smart-right-click-overlay-root .srcbe-shell {
@@ -57,15 +58,16 @@
     radial-gradient(circle at 50% 46%, rgba(18, 12, 34, 0.82), rgba(10, 6, 19, 0.34) 46%, rgba(8, 5, 15, 0.12) 72%, rgba(8, 5, 15, 0.03) 100%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)) !important;
   box-shadow:
-    0 28px 90px rgba(0, 0, 0, 0.42),
-    0 0 80px hsl(var(--srcbe-query-hue) 88% 50% / 0.18) !important;
+    0 24px 64px rgba(0, 0, 0, 0.36),
+    0 0 42px hsl(var(--srcbe-query-hue) 88% 50% / 0.12) !important;
   padding: clamp(16px, 2vw, 26px) !important;
-  transform: translateY(18px) scale(0.985);
-  transition: transform 320ms var(--srcbe-ease);
+  transform: translateY(8px);
+  transition: transform 160ms var(--srcbe-ease);
+  contain: layout style;
 }
 
 #smart-right-click-overlay-root.srcbe-is-visible .srcbe-shell {
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 #smart-right-click-overlay-root .srcbe-ambient {
@@ -73,7 +75,7 @@
   inset: 0 !important;
   overflow: hidden !important;
   pointer-events: none !important;
-  opacity: 0.48 !important;
+  opacity: 0.28 !important;
 }
 
 #smart-right-click-overlay-root .srcbe-orb {
@@ -82,22 +84,22 @@
   width: 380px !important;
   height: 380px !important;
   border-radius: 999px !important;
-  filter: blur(36px) !important;
-  opacity: 0.28 !important;
+  filter: blur(22px) !important;
+  opacity: 0.18 !important;
 }
 
 #smart-right-click-overlay-root .srcbe-orb-a {
   left: -120px !important;
   top: -130px !important;
   background: hsl(var(--srcbe-query-hue) 100% 62%) !important;
-  animation: srcbe-float-a 14s var(--srcbe-ease) infinite alternate;
+  animation: none !important;
 }
 
 #smart-right-click-overlay-root .srcbe-orb-b {
   right: -90px !important;
   bottom: -160px !important;
   background: rgba(223, 93, 230, 0.9) !important;
-  animation: srcbe-float-b 17s var(--srcbe-ease) infinite alternate;
+  animation: none !important;
 }
 
 #smart-right-click-overlay-root .srcbe-grid {
@@ -188,7 +190,7 @@
     linear-gradient(150deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)),
     var(--srcbe-panel-soft) !important;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.32) !important;
-  backdrop-filter: blur(18px) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 #smart-right-click-overlay-root .srcbe-pill-person {
@@ -276,6 +278,7 @@
   overflow: hidden !important;
   border-radius: 22px !important;
   padding: 16px !important;
+  contain: layout style paint !important;
 }
 
 #smart-right-click-overlay-root .srcbe-card-data {
@@ -450,7 +453,7 @@
   font-family: inherit !important;
   font-size: 14px !important;
   font-weight: 820 !important;
-  box-shadow: 0 18px 42px rgba(92, 22, 185, 0.44), 0 0 30px rgba(169, 101, 255, 0.24) !important;
+  box-shadow: 0 14px 30px rgba(92, 22, 185, 0.34), 0 0 18px rgba(169, 101, 255, 0.16) !important;
   transition: transform 220ms var(--srcbe-ease), filter 220ms ease, box-shadow 220ms ease !important;
 }
 
@@ -471,7 +474,7 @@
 #smart-right-click-overlay-root .srcbe-scan-button:hover {
   filter: brightness(1.07) !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 22px 52px rgba(92, 22, 185, 0.56), 0 0 42px rgba(169, 101, 255, 0.32) !important;
+  box-shadow: 0 18px 38px rgba(92, 22, 185, 0.42), 0 0 26px rgba(169, 101, 255, 0.22) !important;
 }
 
 #smart-right-click-overlay-root .srcbe-scan-button:hover i {
@@ -488,6 +491,7 @@
   min-height: 0 !important;
   overflow: auto !important;
   padding: clamp(18px, 2.3vw, 28px) !important;
+  contain: layout style paint !important;
 }
 
 #smart-right-click-overlay-root .srcbe-main h2 {
@@ -523,10 +527,11 @@
   background:
     linear-gradient(160deg, rgba(167, 97, 255, 0.16), rgba(43, 27, 78, 0.12)),
     rgba(8, 5, 18, 0.94) !important;
-  box-shadow: -30px 0 70px rgba(0, 0, 0, 0.55) !important;
-  backdrop-filter: blur(20px) !important;
+  box-shadow: -20px 0 44px rgba(0, 0, 0, 0.42) !important;
+  backdrop-filter: blur(8px) !important;
   transform: translateX(105%) !important;
-  transition: transform 360ms var(--srcbe-ease) !important;
+  transition: transform 220ms var(--srcbe-ease) !important;
+  contain: layout style paint !important;
 }
 
 #smart-right-click-overlay-root .srcbe-news-drawer.srcbe-is-open {

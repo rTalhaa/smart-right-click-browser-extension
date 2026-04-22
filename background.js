@@ -29,6 +29,9 @@ try {
 const MENU_ID = "analyze-selection";
 const MENU_TITLE = "Analyze Selection";
 const FALLBACK_VALUE = "Not available";
+const summaryCache = new Map();
+const wikidataCache = new Map();
+const labelCache = new Map();
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.removeAll(() => {
@@ -51,13 +54,15 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     createdAt: Date.now()
   };
 
+  // Session storage is useful for fallback/debugging, but the overlay should not
+  // wait on it. Start UI injection immediately and let storage finish in parallel.
   chrome.storage.session.set({ [requestId]: payload }, () => {
     if (chrome.runtime.lastError) {
       console.error("Unable to save context menu request:", chrome.runtime.lastError);
     }
-
-    showOverlayInTab(tab, payload);
   });
+
+  showOverlayInTab(tab, payload);
 });
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -103,15 +108,16 @@ async function showOverlayInTab(tab, payload) {
   }
 
   try {
-    await chrome.scripting.insertCSS({
-      target: { tabId: tab.id },
-      files: ["overlay.css"]
-    });
-
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["contentScript.js"]
-    });
+    await Promise.all([
+      chrome.scripting.insertCSS({
+        target: { tabId: tab.id },
+        files: ["overlay.css"]
+      }),
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["contentScript.js"]
+      })
+    ]);
 
     await chrome.tabs.sendMessage(tab.id, {
       type: "SMART_RIGHT_CLICK_SHOW_OVERLAY",
@@ -211,21 +217,22 @@ async function handleEntityRequest(text) {
 }
 
 async function fetchWikipediaSummary(text) {
-  const title = await resolveWikipediaTitle(text);
-
-  if (!title) {
-    return null;
+  const cacheKey = normalizeCacheKey(text);
+  if (summaryCache.has(cacheKey)) {
+    return summaryCache.get(cacheKey);
   }
 
   const url = new URL("https://en.wikipedia.org/w/api.php");
   url.searchParams.set("action", "query");
+  url.searchParams.set("generator", "search");
+  url.searchParams.set("gsrsearch", text);
+  url.searchParams.set("gsrlimit", "1");
   url.searchParams.set("prop", "extracts|pageprops|pageimages");
   url.searchParams.set("exintro", "1");
   url.searchParams.set("explaintext", "1");
   url.searchParams.set("redirects", "1");
   url.searchParams.set("piprop", "thumbnail");
   url.searchParams.set("pithumbsize", "700");
-  url.searchParams.set("titles", title);
   url.searchParams.set("format", "json");
   url.searchParams.set("origin", "*");
 
@@ -240,36 +247,19 @@ async function fetchWikipediaSummary(text) {
   const page = pages.find((item) => !item.missing);
 
   if (!page) {
+    summaryCache.set(cacheKey, null);
     return null;
   }
 
-  return {
-    title: page.title || title,
+  const summary = {
+    title: page.title || text,
     summary: page.extract ? trimSummary(page.extract) : "",
     wikibaseItemId: page.pageprops && page.pageprops.wikibase_item ? page.pageprops.wikibase_item : null,
     imageUrl: page.thumbnail && page.thumbnail.source ? page.thumbnail.source : ""
   };
-}
 
-async function resolveWikipediaTitle(text) {
-  const url = new URL("https://en.wikipedia.org/w/api.php");
-  url.searchParams.set("action", "query");
-  url.searchParams.set("list", "search");
-  url.searchParams.set("srsearch", text);
-  url.searchParams.set("srlimit", "1");
-  url.searchParams.set("format", "json");
-  url.searchParams.set("origin", "*");
-
-  const response = await fetch(url.toString());
-
-  if (!response.ok) {
-    throw new Error(`Wikipedia search request failed with status ${response.status}`);
-  }
-
-  const data = await response.json();
-  const matches = data.query && Array.isArray(data.query.search) ? data.query.search : [];
-
-  return matches.length > 0 ? matches[0].title : null;
+  summaryCache.set(cacheKey, summary);
+  return summary;
 }
 
 function trimSummary(extract) {
@@ -306,19 +296,20 @@ async function fetchEntityCardData(text, summaryResult) {
       return base;
     }
 
+    const labelValues = await extractEntityLabels(wikidata);
     const fields = [
       { label: "Entity query", value: text, tone: "query" },
       { label: "Born", value: extractBorn(wikidata) || FALLBACK_VALUE },
-      { label: "Nationality", value: (await extractLabelField(wikidata, "P27")) || FALLBACK_VALUE },
-      { label: "Occupation", value: (await extractLabelField(wikidata, "P106")) || FALLBACK_VALUE },
+      { label: "Nationality", value: labelValues.P27 || FALLBACK_VALUE },
+      { label: "Occupation", value: labelValues.P106 || FALLBACK_VALUE },
       { label: "Children", value: extractChildren(wikidata) || FALLBACK_VALUE, tone: "numeric" }
     ];
 
     const optionalFields = [
       { label: "Also known as", value: extractAliases(wikidata) },
-      { label: "Residence", value: await extractLabelField(wikidata, "P551") },
-      { label: "Education", value: await extractLabelField(wikidata, "P69") },
-      { label: "Awards", value: await extractLabelField(wikidata, "P166") },
+      { label: "Residence", value: labelValues.P551 },
+      { label: "Education", value: labelValues.P69 },
+      { label: "Awards", value: labelValues.P166 },
       { label: "Official website", value: extractUrlValue(wikidata, "P856") }
     ];
 
@@ -352,6 +343,10 @@ function buildBaseEntityCard(text, imageUrl = "") {
 }
 
 async function fetchWikidataEntity(entityId) {
+  if (wikidataCache.has(entityId)) {
+    return wikidataCache.get(entityId);
+  }
+
   const url = `https://www.wikidata.org/wiki/Special:EntityData/${encodeURIComponent(entityId)}.json`;
   const response = await fetch(url);
 
@@ -360,52 +355,78 @@ async function fetchWikidataEntity(entityId) {
   }
 
   const data = await response.json();
-  return data.entities && data.entities[entityId] ? data.entities[entityId] : null;
+  const entity = data.entities && data.entities[entityId] ? data.entities[entityId] : null;
+  wikidataCache.set(entityId, entity);
+  return entity;
 }
 
-async function extractLabelField(entity, propertyId) {
-  const ids = getClaims(entity, propertyId)
-    .map(extractWikibaseIdFromClaim)
-    .filter(Boolean);
+async function extractEntityLabels(entity) {
+  const propertyIds = ["P27", "P106", "P551", "P69", "P166"];
+  const idsByProperty = {};
+  const allIds = [];
 
-  if (!ids.length) {
-    return "";
-  }
+  propertyIds.forEach((propertyId) => {
+    const ids = getClaims(entity, propertyId)
+      .map(extractWikibaseIdFromClaim)
+      .filter(Boolean)
+      .slice(0, 3);
 
-  const labelsMap = await fetchWikidataLabels(ids);
-  const values = ids.map((id) => labelsMap[id] || id).filter(Boolean);
+    idsByProperty[propertyId] = ids;
+    allIds.push(...ids);
+  });
 
-  return values.length ? values.slice(0, 3).join(", ") : "";
+  const labelsMap = await fetchWikidataLabels(allIds);
+  const values = {};
+
+  propertyIds.forEach((propertyId) => {
+    const labels = idsByProperty[propertyId]
+      .map((id) => labelsMap[id] || id)
+      .filter(Boolean);
+
+    values[propertyId] = labels.length ? labels.join(", ") : "";
+  });
+
+  return values;
 }
 
 async function fetchWikidataLabels(ids) {
-  const uniqueIds = Array.from(new Set(ids));
+  const uniqueIds = Array.from(new Set(ids)).filter(Boolean);
 
   if (!uniqueIds.length) {
     return {};
   }
 
-  const url = new URL("https://www.wikidata.org/w/api.php");
-  url.searchParams.set("action", "wbgetentities");
-  url.searchParams.set("ids", uniqueIds.join("|"));
-  url.searchParams.set("props", "labels");
-  url.searchParams.set("languages", "en");
-  url.searchParams.set("format", "json");
-  url.searchParams.set("origin", "*");
+  const uncachedIds = uniqueIds.filter((id) => !labelCache.has(id));
 
-  const response = await fetch(url.toString());
+  if (uncachedIds.length) {
+    const url = new URL("https://www.wikidata.org/w/api.php");
+    url.searchParams.set("action", "wbgetentities");
+    url.searchParams.set("ids", uncachedIds.join("|"));
+    url.searchParams.set("props", "labels");
+    url.searchParams.set("languages", "en");
+    url.searchParams.set("format", "json");
+    url.searchParams.set("origin", "*");
 
-  if (!response.ok) {
-    throw new Error(`Wikidata labels request failed with status ${response.status}`);
+    const response = await fetch(url.toString());
+
+    if (!response.ok) {
+      throw new Error(`Wikidata labels request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    const entities = data.entities || {};
+
+    uncachedIds.forEach((id) => {
+      const item = entities[id];
+      const label = item && item.labels && item.labels.en ? item.labels.en.value : id;
+      labelCache.set(id, label);
+    });
   }
 
-  const data = await response.json();
-  const entities = data.entities || {};
   const labels = {};
 
   uniqueIds.forEach((id) => {
-    const item = entities[id];
-    labels[id] = item && item.labels && item.labels.en ? item.labels.en.value : id;
+    labels[id] = labelCache.get(id) || id;
   });
 
   return labels;
@@ -678,4 +699,8 @@ function getNewsErrorMessage(error) {
   }
 
   return "Unable to fetch news right now.";
+}
+
+function normalizeCacheKey(value) {
+  return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
 }

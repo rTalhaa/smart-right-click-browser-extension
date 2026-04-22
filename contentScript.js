@@ -20,6 +20,7 @@
   const ROOT_ID = "smart-right-click-overlay-root";
   const elements = {};
   let currentPayload = null;
+  let fitDataCardFrame = 0;
 
   chrome.runtime.onMessage.addListener((message) => {
     if (!message || message.type !== "SMART_RIGHT_CLICK_SHOW_OVERLAY") {
@@ -44,6 +45,7 @@
 
     requestAnimationFrame(() => {
       root.classList.add("srcbe-is-visible");
+      fitDataCard();
     });
 
     loadEntityDetails(payload.text);
@@ -417,7 +419,12 @@
       return;
     }
 
-    requestAnimationFrame(() => {
+    if (fitDataCardFrame) {
+      cancelAnimationFrame(fitDataCardFrame);
+    }
+
+    fitDataCardFrame = requestAnimationFrame(() => {
+      fitDataCardFrame = 0;
       const cardStyles = getComputedStyle(elements.dataCard);
       const cardHeight = elements.dataCard.clientHeight;
       const paddingY = parseFloat(cardStyles.paddingTop) + parseFloat(cardStyles.paddingBottom);
