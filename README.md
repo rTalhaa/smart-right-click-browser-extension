@@ -14,9 +14,6 @@ This is a private proprietary project. See [NOTICE.md](NOTICE.md).
 
 No open-source license is granted. Do not copy, redistribute, publish, sublicense, or reuse this code without explicit written permission from the owner.
 
-## Video Demo
-
-
 ## What It Does
 
 1. Adds a single selection-only context menu item: `Analyze Selection`.
