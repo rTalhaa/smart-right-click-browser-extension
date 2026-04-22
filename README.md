@@ -1,3 +1,5 @@
+# Video Demo:
+
 # Smart Right-Click Browser Extension
 
 Premium Manifest V3 extension for Chrome and Edge.
