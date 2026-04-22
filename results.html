@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!--
+      results.html
+      ------------
+      Single extension results page.
+      JS renders dynamic cards and lists into #results-content.
+    -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Smart Right-Click Results</title>
+    <link rel="stylesheet" href="results.css">
+    <!-- config.js exposes window.CONFIG for API keys; loaded before results.js -->
+    <script src="config.js" defer></script>
+    <script src="results.js" defer></script>
+  </head>
+  <body>
+    <div class="ambient-bg" aria-hidden="true">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="orb orb-c"></div>
+      <div class="noise-layer"></div>
+    </div>
+
+    <main class="page-shell">
+      <header class="hero glass reveal" data-reveal="hero">
+        <h1 id="hero-query" class="hero-query">-</h1>
+        <div class="hero__streak" aria-hidden="true"></div>
+      </header>
+
+      <section class="meta-strip reveal" data-reveal="status">
+        <div class="meta-strip__item">
+          <span>Selected</span>
+          <strong id="selected-text">-</strong>
+        </div>
+        <div class="meta-strip__item">
+          <span>Entity</span>
+          <strong id="entity-type">-</strong>
+        </div>
+        <div class="meta-strip__item">
+          <span>Action</span>
+          <strong id="chosen-action">-</strong>
+        </div>
+      </section>
+
+      <section class="status-zone reveal" data-reveal="status" aria-live="polite">
+        <div id="loading-state" class="status status--loading" hidden>
+          <span class="status-dot"></span>
+          <span id="loading-message">Working on your request...</span>
+        </div>
+        <div id="empty-state" class="status status--empty" hidden>
+          <span class="status-dot"></span>
+          <span id="empty-message"></span>
+        </div>
+        <div id="error-state" class="status status--error" hidden>
+          <span class="status-dot"></span>
+          <span id="error-message"></span>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="left-rail">
+          <article class="panel glass reveal tilt-card" data-reveal="left-1">
+            <h2>Data Card</h2>
+            <div class="card-media-wrap">
+              <img id="card-image" class="card-image" alt="Entity image">
+              <div id="card-image-fallback" class="card-image-fallback">No Image</div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Field</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
+                <tbody id="data-table-body">
+                  <tr>
+                    <td>Entity query</td>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel glass reveal tilt-card" data-reveal="left-2">
+            <div class="panel-head">
+              <h2>Negative News</h2>
+              <span id="result-count" class="result-count" hidden></span>
+            </div>
+            <p id="news-status" class="news-status">Click Scan Negative News to open the right-side scanner panel.</p>
+            <div class="news-mini-hint">Results open in a sliding panel with full-scroll view.</div>
+          </article>
+
+          <button id="scan-news-button" class="scan-news-button reveal" data-reveal="left-3" type="button">
+            <span>Scan Negative News</span>
+            <span class="scan-news-button__shine" aria-hidden="true"></span>
+          </button>
+        </aside>
+
+        <section class="right-stage panel glass reveal tilt-card" data-reveal="right">
+          <p class="section-tag">DESCRIPTION</p>
+          <h2 id="description-title">Loading description...</h2>
+          <div id="description-text" class="description-body">Please wait while the summary is generated.</div>
+        </section>
+      </section>
+    </main>
+
+    <div id="news-drawer-backdrop" class="news-drawer-backdrop" hidden></div>
+    <aside id="news-drawer" class="news-drawer" aria-hidden="true" aria-label="Negative news scanner">
+      <div class="news-drawer__head">
+        <div>
+          <p class="section-tag">SCAN RESULTS</p>
+          <h3>Negative News Scanner</h3>
+        </div>
+        <button id="news-drawer-close" class="news-drawer-close" type="button" aria-label="Close news scanner">&times;</button>
+      </div>
+      <p id="drawer-news-status" class="news-status">Preparing scan...</p>
+      <div id="drawer-news-content" class="news-drawer__content"></div>
+    </aside>
+  </body>
+</html>
