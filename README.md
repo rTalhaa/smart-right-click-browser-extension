@@ -1,5 +1,3 @@
-# Video Demo: https://youtu.be/m142utP1bvs
-
 # Smart Right-Click Browser Extension
 
 Premium Manifest V3 extension for Chrome and Edge.
@@ -12,7 +10,6 @@ Highlight text on any webpage -> right-click -> choose **Analyze Selection** -> 
 
 ## Video Demo
 
-- `Video.mp4` (GitHub link): [Video.mp4](Video.mp4)
 
 ## What It Does
 
