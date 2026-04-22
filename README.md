@@ -8,6 +8,13 @@ Highlight text on any webpage -> right-click -> choose **Analyze Selection** -> 
 - dynamic entity data card (table + image)
 - animated right-side negative-news scanner drawer
 
+## Video Demo
+
+<video src="demo/smart-right-click-demo.mp4" controls width="100%"></video>
+
+If the embedded player does not render in your GitHub view, open the demo directly:
+[demo/smart-right-click-demo.mp4](demo/smart-right-click-demo.mp4)
+
 ## Ownership
 
 This is a private proprietary project. See [NOTICE.md](NOTICE.md).
@@ -41,6 +48,8 @@ smart-right-click/
   results.js
   results.css
   config.example.js
+  demo/
+    smart-right-click-demo.mp4
   icons/
     icon16.png
     icon48.png
