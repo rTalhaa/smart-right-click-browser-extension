@@ -1,42 +1,184 @@
-# Smart Right-Click Browser Extension
+# Smart Right-Click
 
-Premium Manifest V3 extension for Chrome and Edge.
+An **in-page intelligence layer for the web**.
 
-Highlight text on any webpage -> right-click -> choose **Analyze Selection** -> open a cinematic same-page overlay with:
-- query-focused header
-- Wikipedia summary
-- dynamic entity data card (table + image)
-- animated right-side negative-news scanner drawer
+Smart Right-Click turns any highlighted text into an instant research surface. Instead of sending users to a separate results page, it injects a premium same-page overlay directly into the current tab, letting them analyze people, places, companies, and topics without breaking context.
 
-## Video Demo
+Highlight text.  
+Right-click.  
+Analyze instantly.
 
-<video src="demo/smart-right-click-demo.mp4" controls width="100%"></video>
+---
 
-If the embedded player does not render in your GitHub view, open the demo directly:
-[demo/smart-right-click-demo.mp4](demo/smart-right-click-demo.mp4)
+## Why It Matters
 
-## Ownership
+Most browser workflows still force users into a disruptive loop:
 
-This is a private proprietary project. See [NOTICE.md](NOTICE.md).
+1. copy text  
+2. open a new tab  
+3. search manually  
+4. compare sources  
+5. come back to the original page  
 
-No open-source license is granted. Do not copy, redistribute, publish, sublicense, or reuse this code without explicit written permission from the owner.
+Smart Right-Click removes that loop.
+
+It brings structured context, summary data, and on-demand news signals into the page the user is already viewing, creating a faster and more immersive way to research what matters.
+
+---
+
+## Core Product Idea
+
+This extension is built around a simple belief:
+
+> the browser should understand what the user is looking at, and respond in place
+
+Instead of behaving like a traditional extension popup or redirect flow, Smart Right-Click injects a cinematic overlay into the active webpage and turns the selected text into a live intelligence panel.
+
+That same-page experience is the core product.
+
+---
 
 ## What It Does
 
-1. Adds a single selection-only context menu item: `Analyze Selection`.
-2. Captures highlighted text using `info.selectionText`.
-3. Detects a demo entity type (`Person` / `Place` / `Other`).
-4. Injects an in-page overlay into the current tab.
-5. Renders:
-   - searched query
-   - metadata strip
-   - full description (Wikipedia intro)
-   - image + dynamic table fields from Wikidata when available
-6. On **Scan Negative News**:
-   - opens a right sliding drawer
-   - calls all configured news providers (GNews + NewsAPI)
-   - merges + deduplicates results
-   - labels provider attribution on status and per result row
+When a user highlights text and clicks **Analyze Selection**, the extension:
+
+- captures the selected text from the page
+- classifies the selection into a lightweight entity type
+- injects a full-screen overlay into the current webpage
+- fetches summary information from Wikipedia
+- fetches structured fields from Wikidata when available
+- displays an image, data card, and description in a premium UI
+- scans negative-news style signals on demand using connected news providers
+- opens results in a right-side animated drawer without leaving the page
+
+---
+
+## Product Experience
+
+### 1. Same-Page Overlay Injection
+The primary UX is an in-page overlay, not a separate tab.
+
+Users stay inside the page they were already reading while the extension renders a structured intelligence view over that content.
+
+### 2. Contextual Summary
+Wikipedia provides a quick intro summary and image support when available.
+
+### 3. Structured Entity Data
+Wikidata powers the dynamic data card, allowing the UI to show useful fields such as:
+- nationality
+- occupation
+- residence
+- education
+- awards
+- official website
+
+### 4. On-Demand News Scanner
+Users can trigger **Scan Negative News** to pull recent signals from configured news APIs. Results open in an animated right-side drawer and are labeled by source/provider.
+
+### 5. Premium Interface
+The extension is designed as a product experience, not a developer utility:
+- glassmorphism panels
+- animated transitions
+- cinematic lighting/orbs
+- responsive same-page layout
+- drawer-based expansion
+- reduced-motion friendly behavior
+
+---
+
+## Why This Is Different
+
+Most browser extensions either:
+- open a popup
+- redirect to a results page
+- show minimal utility UI
+
+Smart Right-Click instead behaves like an **intelligence layer embedded into the browsing experience**.
+
+That changes the feel of the product completely:
+- faster workflow
+- better context retention
+- less tab switching
+- more immersive analysis
+- stronger perceived product quality
+
+---
+
+## Demo
+
+<video src="demo/smart-right-click-demo.mp4" controls width="100%"></video>
+
+If the embedded video does not render in GitHub view, open it directly:
+
+[demo/smart-right-click-demo.mp4](demo/smart-right-click-demo.mp4)
+
+---
+
+## How It Works
+
+### User Flow
+
+1. Highlight text on any webpage
+2. Right-click
+3. Choose **Analyze Selection**
+4. Overlay is injected into the same page
+5. Summary + structured data load into the overlay
+6. User optionally clicks **Scan Negative News**
+7. Drawer opens with aggregated news results
+
+---
+
+## Architecture
+
+### `manifest.json`
+Defines the extension as a Manifest V3 browser extension with:
+- context menu access
+- scripting support
+- tab access
+- storage access
+- required host permissions for external providers
+
+### `background.js`
+Acts as the service worker and orchestration layer.
+
+Responsibilities:
+- creates the context menu item
+- captures selected text
+- creates the request payload
+- stores payload in session storage
+- injects the same-page overlay
+- handles provider requests for Wikipedia, Wikidata, and news APIs
+- falls back when injection is not allowed
+
+### `contentScript.js`
+Owns the primary product experience.
+
+Responsibilities:
+- renders the injected overlay
+- controls overlay interactions
+- manages image, summary, card, and drawer states
+- sends background messages for external data
+- keeps the UX inside the current page
+
+### `overlay.css`
+Defines the visual language of the in-page interface.
+
+Responsibilities:
+- scoped overlay styling
+- responsive layout
+- animation system
+- premium dark/violet UI
+- drawer transitions
+- image/data card presentation
+
+### `results.html`, `results.js`, `results.css`
+Legacy fallback interface.
+
+These files are **not the main product flow anymore**.
+
+They exist only as a fallback for cases where the browser blocks same-page injection, such as protected browser pages.
+
+---
 
 ## File Tree
 
@@ -58,138 +200,3 @@ smart-right-click/
     icon128.png
   NOTICE.md
   README.md
-```
-
-## Architecture
-
-### `manifest.json`
-- MV3 config
-- service worker entry: `background.js`
-- permissions: `activeTab`, `contextMenus`, `scripting`, `storage`, `tabs`
-- host permissions for Wikipedia, Wikidata, GNews, NewsAPI
-
-### `background.js`
-- creates one context menu item on install
-- captures selected text
-- builds request payload
-- writes payload into `chrome.storage.session`
-- injects the same-page overlay into the active webpage
-- fetches Wikipedia, Wikidata, GNews, and NewsAPI data for the overlay
-- falls back to `results.html` when the browser blocks injection on protected pages
-
-### `contentScript.js`
-- owns the injected overlay UI
-- renders the data card, description panel, and negative-news drawer on the same page
-- requests external data from the background service worker through extension messages
-
-### `overlay.css`
-- scoped V2 overlay styling
-- premium dark/violet visual system
-- same-page modal, responsive layout, animated drawer, and interaction states
-
-### `results.html`
-- legacy/fallback premium page shell
-- left rail: Data Card + News summary + scan button
-- right stage: Description panel
-- off-canvas right drawer: scrollable negative-news scanner
-
-### `results.js`
-- loads payload from session storage
-- fetches summary + thumbnail from Wikipedia
-- fetches structured fields from Wikidata
-- renders dynamic table fields (includes optional fields when available)
-- scans news on button click only
-- queries both providers, merges and dedupes results
-- applies provider attribution
-- handles animations, drawer open/close, and reduced-motion friendly fallbacks
-
-### `results.css`
-- premium dark/violet visual system
-- responsive grid layout
-- table/td hierarchy styling
-- dynamic tones (query hue + numeric emphasis)
-- animated drawer and interaction states
-
-### `config.example.js`
-- safe template for local API key config
-- copy to `config.js` for local testing
-- `config.js` is ignored by git and should not be committed
-
-## Setup
-
-## 1) Configure API Keys
-
-Copy `config.example.js` to `config.js`, then edit `config.js`:
-
-```js
-const CONFIG = {
-  GNEWS_API_KEY: "YOUR_GNEWS_KEY",
-  NEWS_API_KEY: "YOUR_NEWSAPI_KEY"
-};
-```
-
-Never commit real API keys.
-
-## 2) Load Extension (Chrome)
-
-1. Open `chrome://extensions`
-2. Enable **Developer mode**
-3. Click **Load unpacked**
-4. Select `smart-right-click` folder
-
-## 3) Load Extension (Edge)
-
-1. Open `edge://extensions`
-2. Enable **Developer mode**
-3. Click **Load unpacked**
-4. Select `smart-right-click` folder
-
-## Usage
-
-1. Highlight text on any page (example: `Cristiano Ronaldo`)
-2. Right-click -> `Analyze Selection`
-3. Review the same-page overlay summary + data card
-4. Click `Scan Negative News` to open the overlay drawer and fetch news
-5. Press `Esc` or the close button to dismiss the drawer/overlay
-
-## Data Sources
-
-- Summary + image: **Wikipedia API**
-- Structured fields: **Wikidata API**
-- News scanning: **GNews API + NewsAPI** (aggregate mode)
-
-## Validation Checklist
-
-- Context menu appears only on selected text
-- Single menu item only (`Analyze Selection`)
-- Query opens in a same-page overlay on normal webpages
-- Protected browser pages fall back to the extension results tab
-- Full description shown
-- Data card image renders when available
-- Dynamic table fills with available fields
-- Scan opens right-side drawer with animation
-- Drawer is scrollable and closable (`X`, backdrop, `Esc`)
-- News status shows provider usage
-- News rows show provider attribution
-
-## Known Limitations
-
-- Entity detection is heuristic (demo quality)
-- Client-side API keys are exposed (POC choice)
-- Provider quotas and plan restrictions apply
-- Wikipedia/Wikidata coverage varies by entity
-- News quality and dedupe depend on provider response data
-
-## Sharing Safely
-
-- Keep the GitHub repository private.
-- Share access only with trusted reviewers/collaborators.
-- Do not add an open-source license unless you intentionally want to grant reuse rights.
-- Rotate any API keys that were ever committed or shared.
-- Use `config.example.js` in GitHub and keep real local keys in ignored `config.js`.
-
-## Dev Notes
-
-- `results.html` supports preview mode for design screenshots:
-  - `results.html?preview=1&q=Cristiano%20Ronaldo&type=Person`
-- Keep `apply_patch` edits scoped to this tree to avoid style drift.
