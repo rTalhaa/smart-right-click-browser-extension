@@ -6,6 +6,9 @@ desktop.ini
 # Logs
 *.log
 
+# Local API keys / demo secrets
+config.js
+
 # Local screenshots/debug artifacts
 screenshots/
 video-notes/

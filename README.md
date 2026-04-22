@@ -8,6 +8,12 @@ Highlight text on any webpage -> right-click -> choose **Analyze Selection** -> 
 - dynamic entity data card (table + image)
 - animated right-side negative-news scanner drawer
 
+## Ownership
+
+This is a private proprietary project. See [NOTICE.md](NOTICE.md).
+
+No open-source license is granted. Do not copy, redistribute, publish, sublicense, or reuse this code without explicit written permission from the owner.
+
 ## Video Demo
 
 
@@ -37,11 +43,12 @@ smart-right-click/
   results.html
   results.js
   results.css
-  config.js
+  config.example.js
   icons/
     icon16.png
     icon48.png
     icon128.png
+  NOTICE.md
   README.md
 ```
 
@@ -83,14 +90,16 @@ smart-right-click/
 - dynamic tones (query hue + numeric emphasis)
 - animated drawer and interaction states
 
-### `config.js`
-- client-side API keys (POC style)
+### `config.example.js`
+- safe template for local API key config
+- copy to `config.js` for local testing
+- `config.js` is ignored by git and should not be committed
 
 ## Setup
 
 ## 1) Configure API Keys
 
-Edit `config.js`:
+Copy `config.example.js` to `config.js`, then edit `config.js`:
 
 ```js
 const CONFIG = {
@@ -98,6 +107,8 @@ const CONFIG = {
   NEWS_API_KEY: "YOUR_NEWSAPI_KEY"
 };
 ```
+
+Never commit real API keys.
 
 ## 2) Load Extension (Chrome)
 
@@ -146,6 +157,14 @@ const CONFIG = {
 - Provider quotas and plan restrictions apply
 - Wikipedia/Wikidata coverage varies by entity
 - News quality and dedupe depend on provider response data
+
+## Sharing Safely
+
+- Keep the GitHub repository private.
+- Share access only with trusted reviewers/collaborators.
+- Do not add an open-source license unless you intentionally want to grant reuse rights.
+- Rotate any API keys that were ever committed or shared.
+- Use `config.example.js` in GitHub and keep real local keys in ignored `config.js`.
 
 ## Dev Notes
 
