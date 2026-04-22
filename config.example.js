@@ -10,4 +10,4 @@ const CONFIG = {
   NEWS_API_KEY: "YOUR_NEWSAPI_KEY"
 };
 
-window.CONFIG = CONFIG;
+globalThis.CONFIG = CONFIG;

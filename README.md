@@ -2,7 +2,7 @@
 
 Premium Manifest V3 extension for Chrome and Edge.
 
-Highlight text on any webpage -> right-click -> choose **Analyze Selection** -> open a cinematic results page with:
+Highlight text on any webpage -> right-click -> choose **Analyze Selection** -> open a cinematic same-page overlay with:
 - query-focused header
 - Wikipedia summary
 - dynamic entity data card (table + image)
@@ -26,7 +26,7 @@ No open-source license is granted. Do not copy, redistribute, publish, sublicens
 1. Adds a single selection-only context menu item: `Analyze Selection`.
 2. Captures highlighted text using `info.selectionText`.
 3. Detects a demo entity type (`Person` / `Place` / `Other`).
-4. Opens one results tab (`results.html?id=<requestId>`).
+4. Injects an in-page overlay into the current tab.
 5. Renders:
    - searched query
    - metadata strip
@@ -44,6 +44,8 @@ No open-source license is granted. Do not copy, redistribute, publish, sublicens
 smart-right-click/
   manifest.json
   background.js
+  contentScript.js
+  overlay.css
   results.html
   results.js
   results.css
@@ -63,7 +65,7 @@ smart-right-click/
 ### `manifest.json`
 - MV3 config
 - service worker entry: `background.js`
-- permissions: `contextMenus`, `storage`, `tabs`
+- permissions: `activeTab`, `contextMenus`, `scripting`, `storage`, `tabs`
 - host permissions for Wikipedia, Wikidata, GNews, NewsAPI
 
 ### `background.js`
@@ -71,10 +73,22 @@ smart-right-click/
 - captures selected text
 - builds request payload
 - writes payload into `chrome.storage.session`
-- opens `results.html` with request id
+- injects the same-page overlay into the active webpage
+- fetches Wikipedia, Wikidata, GNews, and NewsAPI data for the overlay
+- falls back to `results.html` when the browser blocks injection on protected pages
+
+### `contentScript.js`
+- owns the injected overlay UI
+- renders the data card, description panel, and negative-news drawer on the same page
+- requests external data from the background service worker through extension messages
+
+### `overlay.css`
+- scoped V2 overlay styling
+- premium dark/violet visual system
+- same-page modal, responsive layout, animated drawer, and interaction states
 
 ### `results.html`
-- premium page shell
+- legacy/fallback premium page shell
 - left rail: Data Card + News summary + scan button
 - right stage: Description panel
 - off-canvas right drawer: scrollable negative-news scanner
@@ -134,8 +148,9 @@ Never commit real API keys.
 
 1. Highlight text on any page (example: `Cristiano Ronaldo`)
 2. Right-click -> `Analyze Selection`
-3. Review summary + data card
-4. Click `Scan Negative News` to open animated right drawer and fetch news
+3. Review the same-page overlay summary + data card
+4. Click `Scan Negative News` to open the overlay drawer and fetch news
+5. Press `Esc` or the close button to dismiss the drawer/overlay
 
 ## Data Sources
 
@@ -147,7 +162,8 @@ Never commit real API keys.
 
 - Context menu appears only on selected text
 - Single menu item only (`Analyze Selection`)
-- Query opens in one extension results page
+- Query opens in a same-page overlay on normal webpages
+- Protected browser pages fall back to the extension results tab
 - Full description shown
 - Data card image renders when available
 - Dynamic table fills with available fields

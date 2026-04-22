@@ -2,9 +2,11 @@
   "manifest_version": 3,
   "name": "Smart Right-Click Browser Extension",
   "version": "0.1.0",
-  "description": "Highlight text, right-click, then search negative news or summarize the selection in a new extension tab.",
+  "description": "Highlight text, right-click, then analyze the selection in a premium same-page overlay.",
   "permissions": [
+    "activeTab",
     "contextMenus",
+    "scripting",
     "storage",
     "tabs"
   ],
