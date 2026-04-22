@@ -10,6 +10,10 @@ Highlight text on any webpage -> right-click -> choose **Analyze Selection** -> 
 - dynamic entity data card (table + image)
 - animated right-side negative-news scanner drawer
 
+## Video Demo
+
+- `Video.mp4` (GitHub link): [Video.mp4](Video.mp4)
+
 ## What It Does
 
 1. Adds a single selection-only context menu item: `Analyze Selection`.
