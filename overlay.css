@@ -122,10 +122,10 @@
 
 #smart-right-click-overlay-root .srcbe-header {
   display: flex !important;
-  align-items: flex-start !important;
+  align-items: center !important;
   justify-content: space-between !important;
   gap: 18px !important;
-  min-height: 86px !important;
+  min-height: 92px !important;
 }
 
 #smart-right-click-overlay-root .srcbe-kicker {
@@ -155,10 +155,15 @@
     0 0 18px hsl(var(--srcbe-query-hue) 100% 52% / 0.28),
     0 0 36px hsl(var(--srcbe-query-hue) 95% 58% / 0.18) !important;
   overflow-wrap: anywhere !important;
+  white-space: nowrap !important;
 }
 
 #smart-right-click-overlay-root .srcbe-query-plate {
-  width: min(820px, calc(100% - 60px)) !important;
+  width: fit-content !important;
+  max-width: calc(100% - 64px) !important;
+  min-height: 60px !important;
+  display: inline-flex !important;
+  align-items: center !important;
   border: 1px solid rgba(225, 196, 255, 0.22) !important;
   border-radius: 22px !important;
   background:
@@ -169,6 +174,7 @@
     0 0 28px hsl(var(--srcbe-query-hue) 95% 58% / 0.12) !important;
   padding: clamp(12px, 1.4vw, 18px) clamp(16px, 2vw, 24px) !important;
   backdrop-filter: blur(6px) !important;
+  overflow: hidden !important;
 }
 
 #smart-right-click-overlay-root .srcbe-icon-button {
@@ -352,21 +358,20 @@
   display: grid !important;
   place-items: center !important;
   height: var(--srcbe-image-height) !important;
-  min-height: 160px !important;
+  min-height: 180px !important;
   overflow: hidden !important;
   border: 1px solid rgba(197, 161, 255, 0.28) !important;
   border-radius: 18px !important;
-  background:
-    radial-gradient(circle at 50% 18%, rgba(151, 85, 255, 0.18), transparent 44%),
-    rgba(11, 7, 24, 0.72) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
 }
 
 #smart-right-click-overlay-root .srcbe-image-frame img {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
-  object-position: center top !important;
-  padding: 10px !important;
+  object-position: center center !important;
+  padding: 0 !important;
+  image-rendering: auto !important;
 }
 
 #smart-right-click-overlay-root #srcbe-image-fallback {
@@ -383,6 +388,7 @@
   border: 1px solid rgba(197, 161, 255, 0.24) !important;
   border-radius: 16px !important;
   background: rgba(8, 5, 19, 0.52) !important;
+  contain: layout paint !important;
 }
 
 #smart-right-click-overlay-root .srcbe-table {
@@ -392,16 +398,16 @@
 }
 
 #smart-right-click-overlay-root .srcbe-col-field {
-  width: 34% !important;
+  width: 33% !important;
 }
 
 #smart-right-click-overlay-root .srcbe-col-value {
-  width: 66% !important;
+  width: 67% !important;
 }
 
 #smart-right-click-overlay-root .srcbe-table th,
 #smart-right-click-overlay-root .srcbe-table td {
-  padding: clamp(7px, 0.78vh, 9px) 12px !important;
+  padding: clamp(8px, 0.85vh, 10px) 12px !important;
   border-bottom: 1px solid rgba(197, 161, 255, 0.18) !important;
   vertical-align: middle !important;
   text-align: left !important;
@@ -427,8 +433,8 @@
 #smart-right-click-overlay-root .srcbe-table td:last-child {
   color: var(--srcbe-text) !important;
   font-size: clamp(11px, 0.92vw, 13px) !important;
-  font-weight: 740 !important;
-  line-height: 1.24 !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
   overflow-wrap: anywhere !important;
 }
 
@@ -659,6 +665,14 @@
 
   #smart-right-click-overlay-root .srcbe-main {
     min-height: 300px !important;
+  }
+
+  #smart-right-click-overlay-root h1 {
+    white-space: normal !important;
+  }
+
+  #smart-right-click-overlay-root .srcbe-query-plate {
+    max-width: 100% !important;
   }
 }
 

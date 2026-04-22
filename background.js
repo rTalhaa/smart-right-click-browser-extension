@@ -231,8 +231,9 @@ async function fetchWikipediaSummary(text) {
   url.searchParams.set("exintro", "1");
   url.searchParams.set("explaintext", "1");
   url.searchParams.set("redirects", "1");
-  url.searchParams.set("piprop", "thumbnail");
-  url.searchParams.set("pithumbsize", "700");
+  // Ask for original first; fallback to thumbnail if unavailable.
+  url.searchParams.set("piprop", "original|thumbnail");
+  url.searchParams.set("pithumbsize", "900");
   url.searchParams.set("format", "json");
   url.searchParams.set("origin", "*");
 
@@ -255,7 +256,7 @@ async function fetchWikipediaSummary(text) {
     title: page.title || text,
     summary: page.extract ? trimSummary(page.extract) : "",
     wikibaseItemId: page.pageprops && page.pageprops.wikibase_item ? page.pageprops.wikibase_item : null,
-    imageUrl: page.thumbnail && page.thumbnail.source ? page.thumbnail.source : ""
+    imageUrl: resolveWikipediaImage(page)
   };
 
   summaryCache.set(cacheKey, summary);
@@ -266,6 +267,18 @@ function trimSummary(extract) {
   const cleaned = extract.replace(/\s+/g, " ").trim();
   const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [];
   return sentences.length ? sentences.join(" ").trim() : cleaned;
+}
+
+function resolveWikipediaImage(page) {
+  if (page && page.original && typeof page.original.source === "string") {
+    return page.original.source;
+  }
+
+  if (page && page.thumbnail && typeof page.thumbnail.source === "string") {
+    return page.thumbnail.source;
+  }
+
+  return "";
 }
 
 function buildSummaryViewModel(text, summaryResult) {

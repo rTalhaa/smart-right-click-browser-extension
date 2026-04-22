@@ -441,9 +441,9 @@
 
       const headHeight = head.getBoundingClientRect().height;
       const tableHeight = tableWrap.getBoundingClientRect().height;
-      const gapSpace = 30;
+      const gapSpace = 34;
       const availableForImage = cardHeight - paddingY - headHeight - tableHeight - gapSpace;
-      const finalHeight = Math.max(160, Math.min(280, availableForImage));
+      const finalHeight = Math.max(190, Math.min(290, availableForImage));
 
       elements.imageFrame.style.setProperty("--srcbe-image-height", `${Math.round(finalHeight)}px`);
     });
