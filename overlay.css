@@ -39,26 +39,25 @@
   position: absolute !important;
   inset: 0 !important;
   background:
-    radial-gradient(circle at 20% 8%, rgba(151, 85, 255, 0.28), transparent 34%),
-    radial-gradient(circle at 100% 10%, rgba(223, 93, 230, 0.2), transparent 32%),
-    rgba(3, 2, 8, 0.72) !important;
-  backdrop-filter: blur(10px) saturate(1.1) !important;
+    radial-gradient(circle at 50% 48%, rgba(11, 7, 22, 0.66), rgba(6, 4, 13, 0.28) 34%, rgba(6, 4, 13, 0.08) 58%, transparent 78%),
+    radial-gradient(circle at 50% 50%, hsl(var(--srcbe-query-hue) 88% 50% / 0.16), transparent 42%) !important;
+  backdrop-filter: blur(2px) saturate(1.02) !important;
 }
 
 #smart-right-click-overlay-root .srcbe-shell {
   position: absolute !important;
   inset: 28px !important;
   display: grid !important;
-  grid-template-rows: auto auto auto minmax(0, 1fr) !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
   gap: 14px !important;
   overflow: hidden !important;
-  border: 1px solid rgba(207, 181, 255, 0.24) !important;
+  border: 1px solid rgba(207, 181, 255, 0.14) !important;
   border-radius: 28px !important;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.014)),
-    linear-gradient(165deg, rgba(10, 7, 22, 0.96), rgba(15, 9, 31, 0.93) 48%, rgba(7, 4, 15, 0.96)) !important;
+    radial-gradient(circle at 50% 46%, rgba(18, 12, 34, 0.82), rgba(10, 6, 19, 0.34) 46%, rgba(8, 5, 15, 0.12) 72%, rgba(8, 5, 15, 0.03) 100%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)) !important;
   box-shadow:
-    0 32px 100px rgba(0, 0, 0, 0.72),
+    0 28px 90px rgba(0, 0, 0, 0.42),
     0 0 80px hsl(var(--srcbe-query-hue) 88% 50% / 0.18) !important;
   padding: clamp(16px, 2vw, 26px) !important;
   transform: translateY(18px) scale(0.985);
@@ -74,6 +73,7 @@
   inset: 0 !important;
   overflow: hidden !important;
   pointer-events: none !important;
+  opacity: 0.48 !important;
 }
 
 #smart-right-click-overlay-root .srcbe-orb {
@@ -103,7 +103,7 @@
 #smart-right-click-overlay-root .srcbe-grid {
   position: absolute !important;
   inset: 0 !important;
-  opacity: 0.1 !important;
+  opacity: 0 !important;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px) !important;
@@ -112,7 +112,6 @@
 }
 
 #smart-right-click-overlay-root .srcbe-header,
-#smart-right-click-overlay-root .srcbe-meta,
 #smart-right-click-overlay-root .srcbe-status,
 #smart-right-click-overlay-root .srcbe-layout {
   position: relative !important;
@@ -124,6 +123,7 @@
   align-items: flex-start !important;
   justify-content: space-between !important;
   gap: 18px !important;
+  min-height: 72px !important;
 }
 
 #smart-right-click-overlay-root .srcbe-kicker {
@@ -146,7 +146,7 @@
 #smart-right-click-overlay-root h1 {
   margin: 0 !important;
   color: hsl(var(--srcbe-query-hue) 100% 76%) !important;
-  font-size: clamp(34px, 5vw, 72px) !important;
+  font-size: clamp(36px, 4.4vw, 64px) !important;
   font-weight: 860 !important;
   line-height: 0.95 !important;
   text-shadow:
@@ -181,13 +181,6 @@
   outline-offset: 2px !important;
 }
 
-#smart-right-click-overlay-root .srcbe-meta {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 10px !important;
-}
-
-#smart-right-click-overlay-root .srcbe-meta div,
 #smart-right-click-overlay-root .srcbe-card,
 #smart-right-click-overlay-root .srcbe-status {
   border: 1px solid var(--srcbe-border) !important;
@@ -196,30 +189,6 @@
     var(--srcbe-panel-soft) !important;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.32) !important;
   backdrop-filter: blur(18px) !important;
-}
-
-#smart-right-click-overlay-root .srcbe-meta div {
-  border-radius: 16px !important;
-  padding: 10px 12px !important;
-}
-
-#smart-right-click-overlay-root .srcbe-meta span {
-  display: block !important;
-  color: var(--srcbe-soft) !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.08em !important;
-  text-transform: uppercase !important;
-}
-
-#smart-right-click-overlay-root .srcbe-meta strong {
-  display: block !important;
-  margin-top: 5px !important;
-  color: var(--srcbe-text) !important;
-  font-size: 14px !important;
-  font-weight: 760 !important;
-  line-height: 1.25 !important;
-  overflow-wrap: anywhere !important;
 }
 
 #smart-right-click-overlay-root .srcbe-pill-person {
@@ -243,6 +212,19 @@
   min-height: 38px !important;
   border-radius: 14px !important;
   padding: 9px 12px !important;
+}
+
+#smart-right-click-overlay-root .srcbe-status-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  margin: -1px !important;
+  opacity: 0 !important;
 }
 
 #smart-right-click-overlay-root .srcbe-status span {
@@ -278,7 +260,7 @@
 #smart-right-click-overlay-root .srcbe-layout {
   min-height: 0 !important;
   display: grid !important;
-  grid-template-columns: minmax(330px, 0.42fr) minmax(420px, 0.58fr) !important;
+  grid-template-columns: minmax(360px, 0.42fr) minmax(420px, 0.58fr) !important;
   gap: 16px !important;
 }
 
@@ -294,6 +276,13 @@
   overflow: hidden !important;
   border-radius: 22px !important;
   padding: 16px !important;
+}
+
+#smart-right-click-overlay-root .srcbe-card-data {
+  display: grid !important;
+  grid-template-rows: auto auto auto !important;
+  align-content: stretch !important;
+  min-height: 0 !important;
 }
 
 #smart-right-click-overlay-root .srcbe-card::before {
@@ -341,11 +330,12 @@
 }
 
 #smart-right-click-overlay-root .srcbe-image-frame {
+  --srcbe-image-height: 220px;
   margin-top: 12px !important;
   display: grid !important;
   place-items: center !important;
-  min-height: 220px !important;
-  max-height: min(34vh, 300px) !important;
+  height: var(--srcbe-image-height) !important;
+  min-height: 130px !important;
   overflow: hidden !important;
   border: 1px solid rgba(197, 161, 255, 0.28) !important;
   border-radius: 18px !important;
@@ -357,8 +347,6 @@
 #smart-right-click-overlay-root .srcbe-image-frame img {
   width: 100% !important;
   height: 100% !important;
-  min-height: 220px !important;
-  max-height: min(34vh, 300px) !important;
   object-fit: contain !important;
   object-position: center !important;
 }
@@ -372,9 +360,8 @@
 }
 
 #smart-right-click-overlay-root .srcbe-table-wrap {
-  max-height: 25vh !important;
   margin-top: 12px !important;
-  overflow: auto !important;
+  overflow: hidden !important;
   border: 1px solid rgba(197, 161, 255, 0.24) !important;
   border-radius: 16px !important;
   background: rgba(8, 5, 19, 0.52) !important;
@@ -388,7 +375,7 @@
 
 #smart-right-click-overlay-root .srcbe-table th,
 #smart-right-click-overlay-root .srcbe-table td {
-  padding: 10px 11px !important;
+  padding: clamp(6px, 0.78vh, 9px) 10px !important;
   border-bottom: 1px solid rgba(197, 161, 255, 0.18) !important;
   vertical-align: top !important;
   text-align: left !important;
@@ -398,7 +385,7 @@
 #smart-right-click-overlay-root .srcbe-table th {
   color: #d8c8f7 !important;
   background: rgba(151, 85, 255, 0.1) !important;
-  font-size: 11px !important;
+  font-size: 10px !important;
   font-weight: 830 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
@@ -407,16 +394,16 @@
 #smart-right-click-overlay-root .srcbe-table td:first-child {
   width: 42% !important;
   color: var(--srcbe-muted) !important;
-  font-size: 12px !important;
+  font-size: clamp(10px, 0.82vw, 11px) !important;
   font-weight: 760 !important;
   text-transform: uppercase !important;
 }
 
 #smart-right-click-overlay-root .srcbe-table td:last-child {
   color: var(--srcbe-text) !important;
-  font-size: 13px !important;
+  font-size: clamp(11px, 0.92vw, 13px) !important;
   font-weight: 650 !important;
-  line-height: 1.35 !important;
+  line-height: 1.24 !important;
   overflow-wrap: anywhere !important;
 }
 
@@ -652,10 +639,6 @@
   #smart-right-click-overlay-root .srcbe-shell {
     inset: 0 !important;
     border-radius: 0 !important;
-  }
-
-  #smart-right-click-overlay-root .srcbe-meta {
-    grid-template-columns: 1fr !important;
   }
 
   #smart-right-click-overlay-root .srcbe-header {

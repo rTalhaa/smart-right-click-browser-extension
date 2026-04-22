@@ -51,7 +51,6 @@
 
   function buildOverlayMarkup(payload) {
     const text = escapeHtml(payload.text || "-");
-    const entityType = escapeHtml(payload.entityType || "Other");
 
     return `
       <div class="srcbe-backdrop" data-close-overlay></div>
@@ -64,28 +63,12 @@
 
         <header class="srcbe-header">
           <div>
-            <p class="srcbe-kicker">Selection intelligence</p>
             <h1 id="srcbe-query">${text}</h1>
           </div>
           <button class="srcbe-icon-button" type="button" aria-label="Close overlay" data-close-overlay>&times;</button>
         </header>
 
-        <div class="srcbe-meta">
-          <div>
-            <span>Selected</span>
-            <strong>${text}</strong>
-          </div>
-          <div>
-            <span>Entity</span>
-            <strong id="srcbe-entity-type">${entityType}</strong>
-          </div>
-          <div>
-            <span>Mode</span>
-            <strong>Overlay V2</strong>
-          </div>
-        </div>
-
-        <div class="srcbe-status" id="srcbe-status" aria-live="polite">
+        <div class="srcbe-status srcbe-status-hidden" id="srcbe-status" aria-live="polite">
           <span></span>
           <p>Gathering summary and entity details...</p>
         </div>
@@ -157,9 +140,11 @@
   function cacheElements(root) {
     elements.root = root;
     elements.status = root.querySelector("#srcbe-status");
-    elements.entityType = root.querySelector("#srcbe-entity-type");
+    elements.entityType = null;
     elements.cardImage = root.querySelector("#srcbe-card-image");
     elements.imageFallback = root.querySelector("#srcbe-image-fallback");
+    elements.dataCard = root.querySelector(".srcbe-card-data");
+    elements.imageFrame = root.querySelector(".srcbe-image-frame");
     elements.dataBody = root.querySelector("#srcbe-data-body");
     elements.descriptionTitle = root.querySelector("#srcbe-description-title");
     elements.descriptionText = root.querySelector("#srcbe-description-text");
@@ -183,8 +168,14 @@
     elements.cardImage.addEventListener("error", () => {
       elements.cardImage.hidden = true;
       elements.imageFallback.hidden = false;
+      fitDataCard();
     });
 
+    elements.cardImage.addEventListener("load", () => {
+      fitDataCard();
+    });
+
+    window.addEventListener("resize", fitDataCard);
     document.addEventListener("keydown", handleKeydown);
   }
 
@@ -203,6 +194,7 @@
 
       renderSummary(response.data.summary);
       renderEntityCard(response.data.card, text);
+      fitDataCard();
       setStatus("success", "Analysis ready on this page.");
     } catch (error) {
       console.error("Overlay entity load failed:", error);
@@ -224,12 +216,14 @@
     if (!imageUrl) {
       elements.cardImage.hidden = true;
       elements.imageFallback.hidden = false;
+      fitDataCard();
       return;
     }
 
     elements.cardImage.src = imageUrl;
     elements.cardImage.hidden = false;
     elements.imageFallback.hidden = true;
+    fitDataCard();
   }
 
   function renderDataRows(fields, text) {
@@ -251,6 +245,8 @@
         return row;
       })
     );
+
+    fitDataCard();
   }
 
   async function scanNews() {
@@ -345,6 +341,7 @@
     }
 
     elements.root.classList.remove("srcbe-is-visible");
+    window.removeEventListener("resize", fitDataCard);
     document.removeEventListener("keydown", handleKeydown);
 
     setTimeout(() => {
@@ -387,6 +384,10 @@
   }
 
   function setStatus(type, message) {
+    if (!elements.status) {
+      return;
+    }
+
     elements.status.classList.remove("srcbe-status-loading", "srcbe-status-success", "srcbe-status-error");
     elements.status.classList.add(`srcbe-status-${type}`);
     elements.status.querySelector("p").textContent = message;
@@ -395,6 +396,10 @@
   function applyQueryTheme(text, entityType) {
     const hue = pickHueFromText(text || "");
     elements.root.style.setProperty("--srcbe-query-hue", String(hue));
+
+    if (!elements.entityType) {
+      return;
+    }
 
     elements.entityType.classList.remove("srcbe-pill-person", "srcbe-pill-place", "srcbe-pill-other");
 
@@ -405,6 +410,32 @@
     } else {
       elements.entityType.classList.add("srcbe-pill-other");
     }
+  }
+
+  function fitDataCard() {
+    if (!elements.dataCard || !elements.imageFrame || !elements.dataBody) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const cardStyles = getComputedStyle(elements.dataCard);
+      const cardHeight = elements.dataCard.clientHeight;
+      const paddingY = parseFloat(cardStyles.paddingTop) + parseFloat(cardStyles.paddingBottom);
+      const head = elements.dataCard.querySelector(".srcbe-card-head");
+      const tableWrap = elements.dataCard.querySelector(".srcbe-table-wrap");
+
+      if (!cardHeight || !head || !tableWrap) {
+        return;
+      }
+
+      const headHeight = head.getBoundingClientRect().height;
+      const tableHeight = tableWrap.getBoundingClientRect().height;
+      const gapSpace = 24;
+      const availableForImage = cardHeight - paddingY - headHeight - tableHeight - gapSpace;
+      const finalHeight = Math.max(130, Math.min(320, availableForImage));
+
+      elements.imageFrame.style.setProperty("--srcbe-image-height", `${Math.round(finalHeight)}px`);
+    });
   }
 
   function pickHueFromText(text) {
