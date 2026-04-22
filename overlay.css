@@ -125,7 +125,7 @@
   align-items: flex-start !important;
   justify-content: space-between !important;
   gap: 18px !important;
-  min-height: 72px !important;
+  min-height: 86px !important;
 }
 
 #smart-right-click-overlay-root .srcbe-kicker {
@@ -148,13 +148,27 @@
 #smart-right-click-overlay-root h1 {
   margin: 0 !important;
   color: hsl(var(--srcbe-query-hue) 100% 76%) !important;
-  font-size: clamp(36px, 4.4vw, 64px) !important;
+  font-size: clamp(34px, 4vw, 58px) !important;
   font-weight: 860 !important;
-  line-height: 0.95 !important;
+  line-height: 1 !important;
   text-shadow:
-    0 0 26px hsl(var(--srcbe-query-hue) 100% 52% / 0.36),
-    0 0 60px hsl(var(--srcbe-query-hue) 95% 58% / 0.22) !important;
+    0 0 18px hsl(var(--srcbe-query-hue) 100% 52% / 0.28),
+    0 0 36px hsl(var(--srcbe-query-hue) 95% 58% / 0.18) !important;
   overflow-wrap: anywhere !important;
+}
+
+#smart-right-click-overlay-root .srcbe-query-plate {
+  width: min(820px, calc(100% - 60px)) !important;
+  border: 1px solid rgba(225, 196, 255, 0.22) !important;
+  border-radius: 22px !important;
+  background:
+    linear-gradient(135deg, rgba(34, 22, 60, 0.72), rgba(24, 15, 43, 0.46)),
+    radial-gradient(circle at 18% 30%, hsl(var(--srcbe-query-hue) 90% 62% / 0.22), transparent 42%) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.28),
+    0 0 28px hsl(var(--srcbe-query-hue) 95% 58% / 0.12) !important;
+  padding: clamp(12px, 1.4vw, 18px) clamp(16px, 2vw, 24px) !important;
+  backdrop-filter: blur(6px) !important;
 }
 
 #smart-right-click-overlay-root .srcbe-icon-button {
@@ -338,12 +352,12 @@
   display: grid !important;
   place-items: center !important;
   height: var(--srcbe-image-height) !important;
-  min-height: 130px !important;
+  min-height: 160px !important;
   overflow: hidden !important;
   border: 1px solid rgba(197, 161, 255, 0.28) !important;
   border-radius: 18px !important;
   background:
-    radial-gradient(circle at 50% 18%, rgba(151, 85, 255, 0.26), transparent 44%),
+    radial-gradient(circle at 50% 18%, rgba(151, 85, 255, 0.18), transparent 44%),
     rgba(11, 7, 24, 0.72) !important;
 }
 
@@ -351,7 +365,8 @@
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
-  object-position: center !important;
+  object-position: center top !important;
+  padding: 10px !important;
 }
 
 #smart-right-click-overlay-root #srcbe-image-fallback {
@@ -376,11 +391,19 @@
   table-layout: fixed !important;
 }
 
+#smart-right-click-overlay-root .srcbe-col-field {
+  width: 34% !important;
+}
+
+#smart-right-click-overlay-root .srcbe-col-value {
+  width: 66% !important;
+}
+
 #smart-right-click-overlay-root .srcbe-table th,
 #smart-right-click-overlay-root .srcbe-table td {
-  padding: clamp(6px, 0.78vh, 9px) 10px !important;
+  padding: clamp(7px, 0.78vh, 9px) 12px !important;
   border-bottom: 1px solid rgba(197, 161, 255, 0.18) !important;
-  vertical-align: top !important;
+  vertical-align: middle !important;
   text-align: left !important;
   font-family: inherit !important;
 }
@@ -395,7 +418,6 @@
 }
 
 #smart-right-click-overlay-root .srcbe-table td:first-child {
-  width: 42% !important;
   color: var(--srcbe-muted) !important;
   font-size: clamp(10px, 0.82vw, 11px) !important;
   font-weight: 760 !important;
@@ -405,7 +427,7 @@
 #smart-right-click-overlay-root .srcbe-table td:last-child {
   color: var(--srcbe-text) !important;
   font-size: clamp(11px, 0.92vw, 13px) !important;
-  font-weight: 650 !important;
+  font-weight: 740 !important;
   line-height: 1.24 !important;
   overflow-wrap: anywhere !important;
 }

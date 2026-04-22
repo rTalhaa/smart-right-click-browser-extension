@@ -64,7 +64,7 @@
         </div>
 
         <header class="srcbe-header">
-          <div>
+          <div class="srcbe-query-plate">
             <h1 id="srcbe-query">${text}</h1>
           </div>
           <button class="srcbe-icon-button" type="button" aria-label="Close overlay" data-close-overlay>&times;</button>
@@ -88,6 +88,10 @@
               </div>
               <div class="srcbe-table-wrap">
                 <table class="srcbe-table">
+                  <colgroup>
+                    <col class="srcbe-col-field">
+                    <col class="srcbe-col-value">
+                  </colgroup>
                   <thead>
                     <tr>
                       <th scope="col">Field</th>
@@ -437,9 +441,9 @@
 
       const headHeight = head.getBoundingClientRect().height;
       const tableHeight = tableWrap.getBoundingClientRect().height;
-      const gapSpace = 24;
+      const gapSpace = 30;
       const availableForImage = cardHeight - paddingY - headHeight - tableHeight - gapSpace;
-      const finalHeight = Math.max(130, Math.min(320, availableForImage));
+      const finalHeight = Math.max(160, Math.min(280, availableForImage));
 
       elements.imageFrame.style.setProperty("--srcbe-image-height", `${Math.round(finalHeight)}px`);
     });
