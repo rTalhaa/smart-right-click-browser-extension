@@ -1,4 +1,4 @@
-# Video Demo:
+# Video Demo: https://youtu.be/m142utP1bvs
 
 # Smart Right-Click Browser Extension
 
